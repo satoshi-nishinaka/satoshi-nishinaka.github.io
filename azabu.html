@@ -1,0 +1,215 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>麻布十番ビルシャトルバス発車時刻</title>
+<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+<link rel="javascript" type="text/javascript" href="js/bootstrap.min.js" />
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script type="text/javascript">
+	var tamachi = ['08:02', '08:14', '08:30', '08:42', '08:58', '09:10', '09:26', '09:38', '09:54', '10:06', '10:22', '10:34', '10:50', '11:02', '11:18', '11:30', '11:46', '11:58', '12:14', '12:26', '12:42', '12:54', '13:10', '13:22', '13:38', '13:50', '14:06', '14:18', '14:34', '14:46', '15:02', '15:14', '15:30', '15:42', '15:58', '16:10', '16:26', '16:38', '16:54', '17:06', '17:22', '17:34', '17:50', '18:02', '18:18', '18:30', '18:46', '18:58', '19:14', '19:26'];
+	var azaju = ['08:14', '08:26', '08:42', '08:54', '09:10', '09:22', '09:38', '09:50', '10:06', '10:18', '10:34', '10:46', '11:02', '11:14', '11:30', '11:42', '11:58', '12:10', '12:26', '12:38', '12:54', '13:06', '13:22', '13:34', '13:50', '14:02', '14:18', '14:30', '14:46', '14:58', '15:14', '15:26', '15:42', '15:54', '16:10', '16:22', '16:38', '16:50', '17:06', '17:18', '17:34', '17:46', '18:02', '18:14', '18:30', '18:42', '18:58', '19:10', '19:26', '19:38'];
+	// var tamachi = ['19:42','19:44','19:46','19:48','19:50', '20:00','20:02','20:04','20:06'];
+	// var azaju = ['19:43','19:45','19:47','19:49','19:51','19:53','19:55','20:01','20:03','20:05','20:07','20:09','20:11'];
+	var arrivalCheckTime = null;
+	var zeroSuppress = function(value) {
+		if(0 <= value && value < 10) {
+			return '0' + value;
+		}
+		return value;
+	}
+	var showCurrentTime = function() {
+		var nowTime = new Date(); //  現在日時を得る
+		var nowHour = nowTime.getHours(); // 時を抜き出す
+		var nowMin  = nowTime.getMinutes(); // 分を抜き出す
+		var nowSec  = nowTime.getSeconds(); // 秒を抜き出す
+		var msg = zeroSuppress(nowHour) + ":" + zeroSuppress(nowMin) + ":" + zeroSuppress(nowSec);
+		$('#current-time').text(msg);
+		if(nowSec % 10 == 0 && arrivalCheckTime == null) {
+			arrivalCheckTime = setInterval(function() {
+				$(".departure-time").removeClass('now');
+				$(".departure-time").removeClass('soon');
+				showArriveSoon('tamachi');
+				showArriveSoon('azaju');
+			}, 10000);
+		}
+	};
+	var showAll = function(applyHtmlTagsId, timeTable) {
+		var previousHour = null;
+		var html = '';
+		timeTable.forEach(function(item, index) {
+			var splited = item.split(':');
+			var hours = splited[0];
+			var minutes = splited[1];
+
+			if(previousHour == null) {
+				// 新しい行
+				html = '<tr><th>' + hours + '</th><td>';
+			} else if(previousHour != hours) {
+				// 異なる時刻
+				html += '</td></tr><tr><th>' + hours + '</th><td>';
+			}
+			previousHour = hours;
+			html += '<span id="' + applyHtmlTagsId + '-' + item.replace(':', '') + '" class="departure-time">' + minutes + '</span>&nbsp;';
+		});
+		html += '</td></tr>';
+		$('#' + applyHtmlTagsId).html(html);
+	}
+	var showArriveSoon = function(place) {
+		switch(place) {
+			case 'tamachi':
+				source = tamachi;
+				break;
+			case 'azaju':
+				source = azaju;
+				break;
+			default:
+				return;
+		}
+		var nowTime = new Date();
+		var currentTime = nowTime.getHours() * 60 + nowTime.getMinutes();
+		var previousTimeText = null;
+		var find = false;
+		remainMinutes = 0;
+		source.some(function(item, index) {
+			var splited = item.split(':');
+			var time = parseInt(splited[0]) * 60 + parseInt(splited[1]);
+			if(currentTime <= time) {
+				find = true;
+				previousTimeText = item;
+				remainMinutes = time - currentTime;
+				return true;
+			}
+		});
+		if(find) {
+			if(60 < remainMinutes) {
+				$("#" + place + '-arrive-soon').html('<div class="alert alert-warning">始発までお待ち下さい</div>');
+			} else {
+				if(remainMinutes == 0) {
+					var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
+					$("#" + place + '-arrive-soon').html('<div class="alert alert-success">到着時刻です</div>');
+					$("#" + targetId).addClass('now');
+				} else {
+					var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
+					$("#" + place + '-arrive-soon').html('<div class="alert alert-info">' + previousTimeText + '<br />あと' + remainMinutes + '分</div>');
+					$("#" + targetId).addClass('soon');
+				}
+			}
+		} else {
+			$("#" + place + '-arrive-soon').html('<div class="alert alert-warning">本日は終了しています</div>');
+		}
+	}
+	$(document).ready(function() {
+		showCurrentTime();
+		showAll('from-tamachi', tamachi);
+		showAll('from-azaju', azaju);
+		showArriveSoon('tamachi');
+		showArriveSoon('azaju');
+		var timer = setInterval(function() {
+			showCurrentTime();
+		}, 1000);
+	});
+</script>
+<style type="text/css">
+	body {
+		margin: 0 4px;
+		10px;
+	}
+	header h1 {
+		text-align: center;
+	}
+	h1 {
+		font-size: 16px;
+		font-weight: bold;
+	}
+	h2 {
+		font-size: 14px;
+		font-weight: bold;
+	}
+	article .time-table {
+		display: inline-block;
+		vertical-align: top;
+		text-align: center;
+		width: 49%;
+	}
+	article table {
+		border-collapse: none;
+		margin: 0 auto;
+	}
+	article table, article th, article td {
+		border: 1px solid #000;
+	}
+	article th {
+		padding: 0 2px;
+	}
+	.arrival-info {
+		height: 5em;
+		padding: 4px;
+	}
+	.arrival-info .alert {
+		padding: 4px;
+	}
+	aside table {
+		margin: 0 auto;
+	}
+	@-webkit-keyframes pulse {
+		from {
+			background-color: #ff0;
+			color: orange;
+		}
+		to {
+			background-color: #fff;
+			color: #000;
+		}
+	}
+	#shuttle-bus span {
+		padding: 2px;
+		margin: 0;
+	}
+	#shuttle-bus .now {
+		-webkit-animation-name: pulse;/* 実行する名前 */
+		-webkit-animation-duration: 0.5s;/* 0.3秒かけて実行 */
+		-webkit-animation-iteration-count: infinite;/* 何回実行するか。infiniteで無限 */
+		-webkit-animation-timing-function: ease-in-out;/* イーズインアウト */
+		-webkit-animation-direction: alternate;/* alternateにするとアニメーションが反復 */
+		-webkit-animation-delay: 0s; /* 実行までの待ち時間 */
+	}
+	#shuttle-bus .soon {
+		background-color: #d9edf7;
+		color: #31708f;
+	}
+</style>
+</head>
+<body>
+<header>
+	<h1>麻布十番ビルシャトルバス　発車時刻</h1>
+	<div class="text-center">
+		現在時刻: <span id="current-time"></span>
+	</div>
+</header>
+<article id="shuttle-bus">
+	<article class="time-table tamachi">
+		<h2>田町駅</h2>
+		<div id="tamachi-arrive-soon" class="arrival-info">
+		</div>
+		<aside>
+			<table id="from-tamachi">
+			</table>
+		</aside>
+	</article>
+	<article class="time-table azaju">
+		<h2>麻布十番ビル</h2>
+		<div id="azaju-arrive-soon" class="arrival-info">
+		</div>
+		<aside>
+			<table id="from-azaju">
+			</table>
+		</aside>
+	</article>
+</article>
+</body>
+</html>
+
