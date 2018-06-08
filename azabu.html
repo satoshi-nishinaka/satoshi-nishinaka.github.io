@@ -1,213 +1,383 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>麻布十番ビルシャトルバス発車時刻</title>
-<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
-<link rel="javascript" type="text/javascript" href="js/bootstrap.min.js" />
-<script src="js/jquery-2.1.1.min.js"></script>
-<script src="js/jquery-ui.min.js"></script>
-<script type="text/javascript">
-	var tamachi = ['08:02', '08:14', '08:30', '08:42', '08:58', '09:10', '09:26', '09:38', '09:54', '10:06', '10:22', '10:34', '10:50', '11:02', '11:18', '11:30', '11:46', '11:58', '12:14', '12:26', '12:42', '12:54', '13:10', '13:22', '13:38', '13:50', '14:06', '14:18', '14:34', '14:46', '15:02', '15:14', '15:30', '15:42', '15:58', '16:10', '16:26', '16:38', '16:54', '17:06', '17:22', '17:34', '17:50', '18:02', '18:18', '18:30', '18:46', '18:58', '19:14', '19:26'];
-	var azaju = ['08:14', '08:26', '08:42', '08:54', '09:10', '09:22', '09:38', '09:50', '10:06', '10:18', '10:34', '10:46', '11:02', '11:14', '11:30', '11:42', '11:58', '12:10', '12:26', '12:38', '12:54', '13:06', '13:22', '13:34', '13:50', '14:02', '14:18', '14:30', '14:46', '14:58', '15:14', '15:26', '15:42', '15:54', '16:10', '16:22', '16:38', '16:50', '17:06', '17:18', '17:34', '17:46', '18:02', '18:14', '18:30', '18:42', '18:58', '19:10', '19:26', '19:38'];
-	var arrivalCheckTime = null;
-	var zeroSuppress = function(value) {
-		if(0 <= value && value < 10) {
-			return '0' + value;
-		}
-		return value;
-	}
-	var showCurrentTime = function() {
-		var nowTime = new Date(); //  現在日時を得る
-		var nowHour = nowTime.getHours(); // 時を抜き出す
-		var nowMin  = nowTime.getMinutes(); // 分を抜き出す
-		var nowSec  = nowTime.getSeconds(); // 秒を抜き出す
-		var msg = zeroSuppress(nowHour) + ":" + zeroSuppress(nowMin) + ":" + zeroSuppress(nowSec);
-		$('#current-time').text(msg);
-		if(nowSec % 10 == 0 && arrivalCheckTime == null) {
-			arrivalCheckTime = setInterval(function() {
-				$(".departure-time").removeClass('now');
-				$(".departure-time").removeClass('soon');
-				showArriveSoon('tamachi');
-				showArriveSoon('azaju');
-			}, 10000);
-		}
-	};
-	var showAll = function(applyHtmlTagsId, timeTable) {
-		var previousHour = null;
-		var html = '';
-		timeTable.forEach(function(item, index) {
-			var splited = item.split(':');
-			var hours = splited[0];
-			var minutes = splited[1];
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>麻布十番ビルシャトルバス発車時刻</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    var tamachi = ['08:02', '08:14', '08:30', '08:42', '08:58', '09:10', '09:26', '09:38', '09:54', '10:06', '10:22', '10:34', '10:50', '11:02', '11:18', '11:30', '11:46', '11:58', '12:14', '12:26', '12:42', '12:54', '13:10', '13:22', '13:38', '13:50', '14:06', '14:18', '14:34', '14:46', '15:02', '15:14', '15:30', '15:42', '15:58', '16:10', '16:26', '16:38', '16:54', '17:06', '17:22', '17:34', '17:50', '18:02', '18:18', '18:30', '18:46', '18:58', '19:14', '19:26'];
+    var azaju = ['08:14', '08:26', '08:42', '08:54', '09:10', '09:22', '09:38', '09:50', '10:06', '10:18', '10:34', '10:46', '11:02', '11:14', '11:30', '11:42', '11:58', '12:10', '12:26', '12:38', '12:54', '13:06', '13:22', '13:34', '13:50', '14:02', '14:18', '14:30', '14:46', '14:58', '15:14', '15:26', '15:42', '15:54', '16:10', '16:22', '16:38', '16:50', '17:06', '17:18', '17:34', '17:46', '18:02', '18:14', '18:30', '18:42', '18:58', '19:10', '19:26', '19:38'];
+    var keihinTohokuNorth = { "title": "田町駅　京浜東北線・根岸線 東京・上野方面    (北行)", "diamond": [{ "minutes": [{ "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }], "hour": "4" }, { "minutes": [{ "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }], "hour": "5" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "6" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "浦", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "浦", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "浦", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "浦", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "浦", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "浦", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "浦", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "浦", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "7" }, { "minutes": [{ "minute": "01", "destination": "赤", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "浦", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "浦", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "浦", "train": "無印" }, { "minute": "18", "destination": "赤", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "浦", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "浦", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "浦", "train": "無印" }, { "minute": "37", "destination": "十", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "浦", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "赤", "train": "無印" }, { "minute": "50", "destination": "浦", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "55", "destination": "浦", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "8" }, { "minutes": [{ "minute": "00", "destination": "赤", "train": "無印" }, { "minute": "03", "destination": "浦", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "浦", "train": "無印" }, { "minute": "11", "destination": "赤", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "浦", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "浦", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "浦", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "浦", "train": "無印" }, { "minute": "43", "destination": "赤", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "浦", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "9" }, { "minutes": [{ "minute": "00", "destination": "浦", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "浦", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "浦", "train": "無印" }, { "minute": "23", "destination": "十", "train": "快" }, { "minute": "27", "destination": "無印", "train": "快" }, { "minute": "33", "destination": "浦", "train": "快" }, { "minute": "38", "destination": "無印", "train": "快" }, { "minute": "43", "destination": "浦", "train": "快" }, { "minute": "48", "destination": "無印", "train": "快" }, { "minute": "53", "destination": "浦", "train": "快" }, { "minute": "58", "destination": "無印", "train": "快" }], "hour": "10" }, { "minutes": [{ "minute": "03", "destination": "浦", "train": "快" }, { "minute": "08", "destination": "無印", "train": "快" }, { "minute": "14", "destination": "浦", "train": "快" }, { "minute": "20", "destination": "無印", "train": "快" }, { "minute": "26", "destination": "浦", "train": "快" }, { "minute": "32", "destination": "無印", "train": "快" }, { "minute": "38", "destination": "浦", "train": "快" }, { "minute": "43", "destination": "無印", "train": "快" }, { "minute": "48", "destination": "浦", "train": "快" }, { "minute": "53", "destination": "無印", "train": "快" }, { "minute": "58", "destination": "無印", "train": "快" }], "hour": "11" }, { "minutes": [{ "minute": "03", "destination": "浦", "train": "快" }, { "minute": "08", "destination": "無印", "train": "快" }, { "minute": "14", "destination": "浦", "train": "快" }, { "minute": "20", "destination": "無印", "train": "快" }, { "minute": "26", "destination": "浦", "train": "快" }, { "minute": "32", "destination": "無印", "train": "快" }, { "minute": "38", "destination": "浦", "train": "快" }, { "minute": "43", "destination": "無印", "train": "快" }, { "minute": "48", "destination": "浦", "train": "快" }, { "minute": "53", "destination": "無印", "train": "快" }, { "minute": "58", "destination": "無印", "train": "快" }], "hour": "12" }, { "minutes": [{ "minute": "03", "destination": "浦", "train": "快" }, { "minute": "08", "destination": "無印", "train": "快" }, { "minute": "14", "destination": "浦", "train": "快" }, { "minute": "20", "destination": "無印", "train": "快" }, { "minute": "26", "destination": "浦", "train": "快" }, { "minute": "32", "destination": "無印", "train": "快" }, { "minute": "38", "destination": "浦", "train": "快" }, { "minute": "43", "destination": "無印", "train": "快" }, { "minute": "48", "destination": "浦", "train": "快" }, { "minute": "53", "destination": "無印", "train": "快" }, { "minute": "58", "destination": "無印", "train": "快" }], "hour": "13" }, { "minutes": [{ "minute": "03", "destination": "浦", "train": "快" }, { "minute": "08", "destination": "無印", "train": "快" }, { "minute": "14", "destination": "浦", "train": "快" }, { "minute": "20", "destination": "無印", "train": "快" }, { "minute": "26", "destination": "無印", "train": "快" }, { "minute": "32", "destination": "浦", "train": "快" }, { "minute": "38", "destination": "無印", "train": "快" }, { "minute": "43", "destination": "浦", "train": "快" }, { "minute": "48", "destination": "無印", "train": "快" }, { "minute": "53", "destination": "浦", "train": "快" }, { "minute": "58", "destination": "無印", "train": "快" }], "hour": "14" }, { "minutes": [{ "minute": "03", "destination": "浦", "train": "快" }, { "minute": "08", "destination": "無印", "train": "快" }, { "minute": "14", "destination": "無印", "train": "快" }, { "minute": "20", "destination": "浦", "train": "快" }, { "minute": "25", "destination": "無印", "train": "快" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "浦", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "浦", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "15" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "赤", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "浦", "train": "無印" }], "hour": "16" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "浦", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "浦", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "浦", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "浦", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "55", "destination": "浦", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "17" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "浦", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "浦", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "浦", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "浦", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "浦", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "浦", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "18" }, { "minutes": [{ "minute": "00", "destination": "浦", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "浦", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "浦", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "浦", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "浦", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "19" }, { "minutes": [{ "minute": "02", "destination": "浦", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "浦", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "浦", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "浦", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "20" }, { "minutes": [{ "minute": "02", "destination": "浦", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "浦", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "浦", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "浦", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "21" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "浦", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "浦", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "浦", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "55", "destination": "浦", "train": "無印" }], "hour": "22" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "浦", "train": "無印" }], "hour": "23" }, { "minutes": [{ "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "赤", "train": "無印" }, { "minute": "49", "destination": "上", "train": "無印" }], "hour": "0" }] };
+    var keihinTohokuSouth = { "title": "田町駅　京浜東北線・根岸線 品川・蒲田方面    (南行)", "diamond": [{ "minutes": [{ "minute": "49", "destination": "無印", "train": "無印" }], "hour": "4" }, { "minutes": [{ "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "5" }, { "minutes": [{ "minute": "06", "destination": "桜", "train": "無印" }, { "minute": "13", "destination": "磯", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "桜", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "磯", "train": "無印" }], "hour": "6" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "磯", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "蒲", "train": "無印" }, { "minute": "24", "destination": "桜", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "鶴", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "蒲", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "蒲", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "鶴", "train": "無印" }], "hour": "7" }, { "minutes": [{ "minute": "01", "destination": "桜", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "蒲", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "鶴", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "蒲", "train": "無印" }, { "minute": "18", "destination": "桜", "train": "無印" }, { "minute": "21", "destination": "鶴", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "蒲", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "31", "destination": "桜", "train": "無印" }, { "minute": "33", "destination": "鶴", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "磯", "train": "無印" }, { "minute": "41", "destination": "蒲", "train": "無印" }, { "minute": "43", "destination": "桜", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "蒲", "train": "無印" }, { "minute": "51", "destination": "磯", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "蒲", "train": "無印" }, { "minute": "58", "destination": "磯", "train": "無印" }], "hour": "8" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "03", "destination": "蒲", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "磯", "train": "無印" }, { "minute": "12", "destination": "蒲", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "鶴", "train": "無印" }, { "minute": "21", "destination": "磯", "train": "無印" }, { "minute": "24", "destination": "神", "train": "無印" }, { "minute": "26", "destination": "蒲", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "蒲", "train": "無印" }, { "minute": "42", "destination": "磯", "train": "無印" }, { "minute": "45", "destination": "蒲", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "蒲", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "磯", "train": "無印" }, { "minute": "59", "destination": "蒲", "train": "無印" }], "hour": "9" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "磯", "train": "無印" }, { "minute": "09", "destination": "蒲", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "磯", "train": "無印" }, { "minute": "20", "destination": "蒲", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "蒲", "train": "無印" }, { "minute": "33", "destination": "磯", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "蒲", "train": "無印" }, { "minute": "44", "destination": "磯", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "磯", "train": "無印" }], "hour": "10" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "磯", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "蒲", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "磯", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "磯", "train": "無印" }], "hour": "11" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "磯", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "蒲", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "磯", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "磯", "train": "無印" }], "hour": "12" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "磯", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "蒲", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "磯", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "磯", "train": "無印" }], "hour": "13" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "磯", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "蒲", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "磯", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "磯", "train": "無印" }], "hour": "14" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "磯", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "蒲", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "磯", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "55", "destination": "無印", "train": "無印" }], "hour": "15" }, { "minutes": [{ "minute": "00", "destination": "桜", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "蒲", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "蒲", "train": "無印" }, { "minute": "30", "destination": "桜", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "蒲", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "磯", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "桜", "train": "無印" }], "hour": "16" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "磯", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "磯", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "桜", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "桜", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "桜", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "磯", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "17" }, { "minutes": [{ "minute": "01", "destination": "蒲", "train": "無印" }, { "minute": "04", "destination": "桜", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "鶴", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "蒲", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "桜", "train": "無印" }, { "minute": "28", "destination": "蒲", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "鶴", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "蒲", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "磯", "train": "無印" }, { "minute": "49", "destination": "蒲", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "55", "destination": "桜", "train": "無印" }, { "minute": "59", "destination": "蒲", "train": "無印" }], "hour": "18" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "鶴", "train": "無印" }, { "minute": "08", "destination": "磯", "train": "無印" }, { "minute": "12", "destination": "蒲", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "磯", "train": "無印" }, { "minute": "22", "destination": "蒲", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "磯", "train": "無印" }, { "minute": "33", "destination": "蒲", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "磯", "train": "無印" }, { "minute": "43", "destination": "蒲", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "磯", "train": "無印" }, { "minute": "54", "destination": "蒲", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "19" }, { "minutes": [{ "minute": "01", "destination": "磯", "train": "無印" }, { "minute": "04", "destination": "蒲", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "磯", "train": "無印" }, { "minute": "15", "destination": "蒲", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "桜", "train": "無印" }, { "minute": "27", "destination": "磯", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "桜", "train": "無印" }, { "minute": "41", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "磯", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "磯", "train": "無印" }], "hour": "20" }, { "minutes": [{ "minute": "01", "destination": "桜", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "磯", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "桜", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "磯", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "磯", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "桜", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "21" }, { "minutes": [{ "minute": "01", "destination": "磯", "train": "無印" }, { "minute": "05", "destination": "桜", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "桜", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "磯", "train": "無印" }, { "minute": "31", "destination": "桜", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "磯", "train": "無印" }, { "minute": "49", "destination": "桜", "train": "無印" }, { "minute": "55", "destination": "無印", "train": "無印" }], "hour": "22" }, { "minutes": [{ "minute": "01", "destination": "磯", "train": "無印" }, { "minute": "07", "destination": "桜", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "磯", "train": "無印" }, { "minute": "25", "destination": "桜", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "磯", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "桜", "train": "無印" }, { "minute": "55", "destination": "無印", "train": "無印" }], "hour": "23" }, { "minutes": [{ "minute": "01", "destination": "磯", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "桜", "train": "無印" }, { "minute": "23", "destination": "蒲", "train": "無印" }, { "minute": "26", "destination": "磯", "train": "無印" }, { "minute": "37", "destination": "桜", "train": "無印" }, { "minute": "58", "destination": "蒲", "train": "無印" }], "hour": "0" }] };
+    var yamanoteUchi = { "title": "田町駅　山手線 東京・上野方面    (内回り)", "diamond": [{ "minutes": [{ "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }], "hour": "4" }, { "minutes": [{ "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "5" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "6" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "7" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "大", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "大", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "8" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "03", "destination": "大", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "大", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "大", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "大", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "池", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "大", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "9" }, { "minutes": [{ "minute": "00", "destination": "大", "train": "無印" }, { "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "10" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "11" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "12" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "13" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "14" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "15" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "16" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "17" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "18" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "19" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "大", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "17", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "大", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "大", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "20" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "大", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "大", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "大", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "21" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "大", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "大", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "22" }, { "minutes": [{ "minute": "03", "destination": "品", "train": "無印" }, { "minute": "08", "destination": "大", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "大", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "品", "train": "無印" }, { "minute": "33", "destination": "大", "train": "無印" }, { "minute": "38", "destination": "品", "train": "無印" }, { "minute": "43", "destination": "大", "train": "無印" }, { "minute": "50", "destination": "品", "train": "無印" }, { "minute": "56", "destination": "池", "train": "無印" }], "hour": "23" }, { "minutes": [{ "minute": "03", "destination": "大", "train": "無印" }, { "minute": "17", "destination": "品", "train": "無印" }, { "minute": "29", "destination": "池", "train": "無印" }], "hour": "0" }] };
+    var yamanoteSoto = { "title": "田町駅　山手線 品川・渋谷方面    (外回り)", "diamond": [{ "minutes": [{ "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "4" }, { "minutes": [{ "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }], "hour": "5" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "6" }, { "minutes": [{ "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "7" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "池", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "8" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "池", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "大", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "大", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "大", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "大", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "9" }, { "minutes": [{ "minute": "00", "destination": "大", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "大", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "大", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "10" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "11" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "55", "destination": "無印", "train": "無印" }], "hour": "12" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "13" }, { "minutes": [{ "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "14" }, { "minutes": [{ "minute": "01", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "14", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "48", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "15" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "09", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "27", "destination": "無印", "train": "無印" }, { "minute": "30", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "16" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "19", "destination": "無印", "train": "無印" }, { "minute": "22", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "33", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "17" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "38", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "18" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "46", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }, { "minute": "59", "destination": "無印", "train": "無印" }], "hour": "19" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "05", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "無印", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "37", "destination": "無印", "train": "無印" }, { "minute": "41", "destination": "無印", "train": "無印" }, { "minute": "44", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "51", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "無印", "train": "無印" }], "hour": "20" }, { "minutes": [{ "minute": "00", "destination": "大", "train": "無印" }, { "minute": "03", "destination": "無印", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "10", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "無印", "train": "無印" }, { "minute": "23", "destination": "無印", "train": "無印" }, { "minute": "26", "destination": "無印", "train": "無印" }, { "minute": "29", "destination": "無印", "train": "無印" }, { "minute": "32", "destination": "無印", "train": "無印" }, { "minute": "36", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "大", "train": "無印" }, { "minute": "42", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "無印", "train": "無印" }, { "minute": "52", "destination": "無印", "train": "無印" }, { "minute": "56", "destination": "無印", "train": "無印" }], "hour": "21" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "無印", "train": "無印" }, { "minute": "08", "destination": "無印", "train": "無印" }, { "minute": "12", "destination": "大", "train": "無印" }, { "minute": "15", "destination": "無印", "train": "無印" }, { "minute": "18", "destination": "無印", "train": "無印" }, { "minute": "21", "destination": "無印", "train": "無印" }, { "minute": "25", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "無印", "train": "無印" }, { "minute": "31", "destination": "大", "train": "無印" }, { "minute": "34", "destination": "無印", "train": "無印" }, { "minute": "39", "destination": "無印", "train": "無印" }, { "minute": "43", "destination": "無印", "train": "無印" }, { "minute": "47", "destination": "無印", "train": "無印" }, { "minute": "50", "destination": "無印", "train": "無印" }, { "minute": "54", "destination": "無印", "train": "無印" }, { "minute": "58", "destination": "無印", "train": "無印" }], "hour": "22" }, { "minutes": [{ "minute": "02", "destination": "無印", "train": "無印" }, { "minute": "06", "destination": "無印", "train": "無印" }, { "minute": "11", "destination": "無印", "train": "無印" }, { "minute": "16", "destination": "無印", "train": "無印" }, { "minute": "20", "destination": "池", "train": "無印" }, { "minute": "24", "destination": "無印", "train": "無印" }, { "minute": "28", "destination": "大", "train": "無印" }, { "minute": "31", "destination": "無印", "train": "無印" }, { "minute": "35", "destination": "無印", "train": "無印" }, { "minute": "40", "destination": "無印", "train": "無印" }, { "minute": "45", "destination": "無印", "train": "無印" }, { "minute": "49", "destination": "池", "train": "無印" }, { "minute": "53", "destination": "無印", "train": "無印" }, { "minute": "57", "destination": "大", "train": "無印" }], "hour": "23" }, { "minutes": [{ "minute": "00", "destination": "無印", "train": "無印" }, { "minute": "04", "destination": "大", "train": "無印" }, { "minute": "07", "destination": "無印", "train": "無印" }, { "minute": "13", "destination": "大", "train": "無印" }, { "minute": "17", "destination": "池", "train": "無印" }, { "minute": "25", "destination": "大", "train": "無印" }, { "minute": "33", "destination": "池", "train": "無印" }, { "minute": "37", "destination": "大", "train": "無印" }, { "minute": "42", "destination": "大", "train": "無印" }, { "minute": "46", "destination": "品", "train": "無印" }, { "minute": "52", "destination": "品", "train": "無印" }], "hour": "0" }, { "minutes": [{ "minute": "00", "destination": "品", "train": "無印" }, { "minute": "05", "destination": "品", "train": "無印" }, { "minute": "11", "destination": "品", "train": "無印" }], "hour": "1" }] }
+    var arrivalCheckTime = null;
+    var zeroSuppress = function(value) {
+        if (0 <= value && value < 10) {
+            return '0' + value;
+        }
+        return value;
+    }
+    var showCurrentTime = function() {
+        var nowTime = new Date(); //  現在日時を得る
+        var nowHour = nowTime.getHours(); // 時を抜き出す
+        var nowMin = nowTime.getMinutes(); // 分を抜き出す
+        var nowSec = nowTime.getSeconds(); // 秒を抜き出す
+        var msg = zeroSuppress(nowHour) + ":" + zeroSuppress(nowMin) + ":" + zeroSuppress(nowSec);
+        $('#current-time').text(msg);
+        if (nowSec % 10 == 0 && arrivalCheckTime == null) {
+            arrivalCheckTime = setInterval(function() {
+                $(".departure-time").removeClass('now');
+                $(".departure-time").removeClass('soon');
+                showArriveSoon('tamachi');
+                showArriveSoon('azaju');
+            }, 10000);
+        }
+    };
+    var showAll = function(applyHtmlTagsId, timeTable) {
+        var previousHour = null;
+        var html = '';
+        timeTable.forEach(function(item, index) {
+            var splited = item.split(':');
+            var hours = splited[0];
+            var minutes = splited[1];
 
-			if(previousHour == null) {
-				// 新しい行
-				html = '<tr><th>' + hours + '</th><td>';
-			} else if(previousHour != hours) {
-				// 異なる時刻
-				html += '</td></tr><tr><th>' + hours + '</th><td>';
-			}
-			previousHour = hours;
-			html += '<span id="' + applyHtmlTagsId + '-' + item.replace(':', '') + '" class="departure-time">' + minutes + '</span>&nbsp;';
-		});
-		html += '</td></tr>';
-		$('#' + applyHtmlTagsId).html(html);
-	}
-	var showArriveSoon = function(place) {
-		switch(place) {
-			case 'tamachi':
-				source = tamachi;
-				break;
-			case 'azaju':
-				source = azaju;
-				break;
-			default:
-				return;
-		}
-		var nowTime = new Date();
-		var currentTime = nowTime.getHours() * 60 + nowTime.getMinutes();
-		var previousTimeText = null;
-		var find = false;
-		remainMinutes = 0;
-		source.some(function(item, index) {
-			var splited = item.split(':');
-			var time = parseInt(splited[0]) * 60 + parseInt(splited[1]);
-			if(currentTime <= time) {
-				find = true;
-				previousTimeText = item;
-				remainMinutes = time - currentTime;
-				return true;
-			}
-		});
-		if(find) {
-			if(60 < remainMinutes) {
-				$("#" + place + '-arrive-soon').html('<div class="alert alert-warning">始発までお待ち下さい</div>');
-			} else {
-				if(remainMinutes == 0) {
-					var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
-					$("#" + place + '-arrive-soon').html('<div class="alert alert-success">到着時刻です</div>');
-					$("#" + targetId).addClass('now');
-				} else {
-					var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
-					$("#" + place + '-arrive-soon').html('<div class="alert alert-info">' + previousTimeText + '<br />あと' + remainMinutes + '分</div>');
-					$("#" + targetId).addClass('soon');
-				}
-			}
-		} else {
-			$("#" + place + '-arrive-soon').html('<div class="alert alert-warning">本日は終了しています</div>');
-		}
-	}
-	$(document).ready(function() {
-		showCurrentTime();
-		showAll('from-tamachi', tamachi);
-		showAll('from-azaju', azaju);
-		showArriveSoon('tamachi');
-		showArriveSoon('azaju');
-		var timer = setInterval(function() {
-			showCurrentTime();
-		}, 1000);
-	});
-</script>
-<style type="text/css">
-	body {
-		margin: 0 4px;
-		10px;
-	}
-	header h1 {
-		text-align: center;
-	}
-	h1 {
-		font-size: 16px;
-		font-weight: bold;
-	}
-	h2 {
-		font-size: 14px;
-		font-weight: bold;
-	}
-	article .time-table {
-		display: inline-block;
-		vertical-align: top;
-		text-align: center;
-		width: 49%;
-	}
-	article table {
-		border-collapse: none;
-		margin: 0 auto;
-	}
-	article table, article th, article td {
-		border: 1px solid #000;
-	}
-	article th {
-		padding: 0 2px;
-	}
-	.arrival-info {
-		height: 5em;
-		padding: 4px;
-	}
-	.arrival-info .alert {
-		padding: 4px;
-	}
-	aside table {
-		margin: 0 auto;
-	}
-	@-webkit-keyframes pulse {
-		from {
-			background-color: #ff0;
-			color: orange;
-		}
-		to {
-			background-color: #fff;
-			color: #000;
-		}
-	}
-	#shuttle-bus span {
-		padding: 2px;
-		margin: 0;
-	}
-	#shuttle-bus .now {
-		-webkit-animation-name: pulse;/* 実行する名前 */
-		-webkit-animation-duration: 0.5s;/* 0.3秒かけて実行 */
-		-webkit-animation-iteration-count: infinite;/* 何回実行するか。infiniteで無限 */
-		-webkit-animation-timing-function: ease-in-out;/* イーズインアウト */
-		-webkit-animation-direction: alternate;/* alternateにするとアニメーションが反復 */
-		-webkit-animation-delay: 0s; /* 実行までの待ち時間 */
-	}
-	#shuttle-bus .soon {
-		background-color: #d9edf7;
-		color: #31708f;
-	}
-</style>
+            if (previousHour == null) {
+                // 新しい行
+                html = '<tr><th>' + hours + '</th><td>';
+            } else if (previousHour != hours) {
+                // 異なる時刻
+                html += '</td></tr><tr><th>' + hours + '</th><td>';
+            }
+            previousHour = hours;
+            html += '<span id="' + applyHtmlTagsId + '-' + item.replace(':', '') + '" class="departure-time">' + minutes + '</span>&nbsp;';
+        });
+        html += '</td></tr>';
+        $('#' + applyHtmlTagsId).html(html);
+    }
+    var showArriveSoon = function(place) {
+        switch (place) {
+            case 'tamachi':
+                source = tamachi;
+                break;
+            case 'azaju':
+                source = azaju;
+                break;
+            default:
+                return;
+        }
+        var nowTime = new Date();
+        var currentTime = nowTime.getHours() * 60 + nowTime.getMinutes();
+        var previousTimeText = null;
+        var find = false;
+        remainMinutes = 0;
+        source.some(function(item, index) {
+            var splited = item.split(':');
+            var time = parseInt(splited[0]) * 60 + parseInt(splited[1]);
+            if (currentTime <= time) {
+                find = true;
+                previousTimeText = item;
+                remainMinutes = time - currentTime;
+                return true;
+            }
+        });
+        if (find) {
+            if (60 < remainMinutes) {
+                $("#" + place + '-arrive-soon').html('<div class="alert alert-warning">始発までお待ち下さい</div>');
+            } else {
+                if (remainMinutes == 0) {
+                    var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
+                    $("#" + place + '-arrive-soon').html('<div class="alert alert-success">到着時刻です</div>');
+                    $("#" + targetId).addClass('now');
+                } else {
+                    var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
+                    $("#" + place + '-arrive-soon').html('<div class="alert alert-info">' + previousTimeText + '<br />あと' + remainMinutes + '分</div>');
+                    $("#" + targetId).addClass('soon');
+                }
+            }
+        } else {
+            $("#" + place + '-arrive-soon').html('<div class="alert alert-warning">本日は終了しています</div>');
+        }
+    }
+    var rendering = function(destinationId, diamond) {
+    	var html = '';
+    	diamond.diamond.forEach(function(list) {
+    		var hour = list.hour;
+    		html += '<tr><th>' + zeroSuppress(hour) + '</th><td>';
+    		list.minutes.forEach(function(minute) {
+    			console.log(minute);
+    			html += '<div class="visible-xs-inline-block align-text-bottom center-block">';
+    			if (minute.destination !== '無印' || minute.train !== '無印') {
+    				html += '<div>';
+	    			if (minute.destination !== '無印') {
+	    				html += '<span class="destination">' + minute.destination + '</span>';
+	    			}
+	    			if (minute.train !== '無印') {
+	    				html += '<span class="train">' + minute.train + '</span>';
+	    			}
+	    			html += '</div>';
+    			}
+    			html += minute.minute + '&nbsp;';
+    			html += '</div>'
+    		});
+    		html += '</td></tr>';
+    	});
+    	$("#" + destinationId + " table").html(html);
+    }
+    $(document).ready(function() {
+        showCurrentTime();
+        showAll('from-tamachi', tamachi);
+        showAll('from-azaju', azaju);
+        rendering('train-diamond-keihin-tohoku-north', keihinTohokuNorth);
+        rendering('train-diamond-keihin-tohoku-south', keihinTohokuSouth);
+        rendering('train-diamond-yamanote-uchi', yamanoteUchi);
+        rendering('train-diamond-yamanote-soto', yamanoteSoto);
+        showArriveSoon('tamachi');
+        showArriveSoon('azaju');
+        var timer = setInterval(function() {
+            showCurrentTime();
+        }, 1000);
+
+        // bind
+        $(".selectable-tab").click(function() {
+            var selectTab = $(this).attr("data-table-type");
+            console.log(selectTab);
+            $('.nav-tabs li').removeClass('active');
+            var activeTab = '';
+            switch (selectTab) {
+                case "shuttle-bus":
+                    activeTab = 'tab-shuttle-bus';
+                    $('.train-diamond').addClass('hidden');
+                    $('#shuttle-bus').removeClass('hidden');
+                    break;
+                case "keihin-tohoku-north":
+                    activeTab = 'tab-keihin-tohoku';
+                    $('#shuttle-bus').addClass('hidden');
+                    $('.train-diamond').addClass('hidden');
+                    $("#train-diamond-keihin-tohoku-north").removeClass('hidden');
+                    break;
+                case "keihin-tohoku-south":
+                    activeTab = 'tab-keihin-tohoku';
+                    $('#shuttle-bus').addClass('hidden');
+                    $('.train-diamond').addClass('hidden');
+                    $("#train-diamond-keihin-tohoku-south").removeClass('hidden');
+                    break;
+                case "yamanote-uchi":
+                    activeTab = 'tab-yamanote';
+                    $('#shuttle-bus').addClass('hidden');
+                    $('.train-diamond').addClass('hidden');
+                    $("#train-diamond-yamanote-uchi").removeClass('hidden');
+                    break;
+                case "yamanote-soto":
+                    activeTab = 'tab-yamanote';
+                    $('#shuttle-bus').addClass('hidden');
+                    $('.train-diamond').addClass('hidden');
+                    $("#train-diamond-yamanote-soto").removeClass('hidden');
+                    break;
+            }
+            $('#' + activeTab).addClass('active');
+        });
+    });
+    </script>
+    <style type="text/css">
+	    body {
+	        margin: 0 4px;
+	        10px;
+	    }
+
+	    header h1 {
+	        text-align: center;
+	    }
+
+	    h1 {
+	        font-size: 16px;
+	        font-weight: bold;
+	    }
+
+	    h2 {
+	        font-size: 14px;
+	        font-weight: bold;
+	    }
+
+	    article .time-table {
+	        display: inline-block;
+	        vertical-align: top;
+	        text-align: center;
+	        width: 49%;
+	    }
+
+	    article table {
+	        border-collapse: none;
+	        margin: 0 auto;
+	    }
+
+	    article table,
+	    article th,
+	    article td {
+	        border: 1px solid #000;
+	    }
+
+	    article th {
+	        padding: 0 2px;
+	    }
+
+	    .arrival-info {
+	        height: 5em;
+	        padding: 4px;
+	    }
+
+	    .arrival-info .alert {
+	        padding: 4px;
+	    }
+
+	    aside table {
+	        margin: 0 auto;
+	    }
+
+	    @-webkit-keyframes pulse {
+	        from {
+	            background-color: #ff0;
+	            color: orange;
+	        }
+	        to {
+	            background-color: #fff;
+	            color: #000;
+	        }
+	    }
+
+	    #shuttle-bus span {
+	        padding: 2px;
+	        margin: 0;
+	    }
+
+	    #shuttle-bus .now {
+	        -webkit-animation-name: pulse;
+	        /* 実行する名前 */
+	        -webkit-animation-duration: 0.5s;
+	        /* 0.3秒かけて実行 */
+	        -webkit-animation-iteration-count: infinite;
+	        /* 何回実行するか。infiniteで無限 */
+	        -webkit-animation-timing-function: ease-in-out;
+	        /* イーズインアウト */
+	        -webkit-animation-direction: alternate;
+	        /* alternateにするとアニメーションが反復 */
+	        -webkit-animation-delay: 0s;
+	        /* 実行までの待ち時間 */
+	    }
+
+	    #shuttle-bus .soon {
+	        background-color: #d9edf7;
+	        color: #31708f;
+	    }
+
+	    body>ul>li>a,
+	    body>ul>li.dropdown.open>ul>li>a {
+	        font-size: 10px;
+	    }
+
+	    .dropdown-menu {
+	        min-width: 100px;
+	    }
+	    .train {
+	    	color: #00f;
+	    }
+	    .center-block {
+	    	text-align: center;
+	    	padding: 2px;
+	    }
+    </style>
 </head>
-<body>
-<header>
-	<h1>麻布十番ビルシャトルバス　発車時刻</h1>
-	<div class="text-center">
-		現在時刻: <span id="current-time"></span>
-	</div>
-</header>
-<article id="shuttle-bus">
-	<article class="time-table tamachi">
-		<h2>田町駅</h2>
-		<div id="tamachi-arrive-soon" class="arrival-info">
-		</div>
-		<aside>
-			<table id="from-tamachi">
-			</table>
-		</aside>
-	</article>
-	<article class="time-table azaju">
-		<h2>麻布十番ビル</h2>
-		<div id="azaju-arrive-soon" class="arrival-info">
-		</div>
-		<aside>
-			<table id="from-azaju">
-			</table>
-		</aside>
-	</article>
-</article>
-</body>
-</html>
 
+<body>
+    <header>
+        <h1>麻布十番ビルシャトルバス　発車時刻</h1>
+        <div class="text-center">
+            現在時刻: <span id="current-time"></span>
+        </div>
+    </header>
+    <ul class="nav nav-tabs">
+        <li id="tab-shuttle-bus" class="active selectable-tab" data-table-type='shuttle-bus'><a href="#">シャトルバス</a></li>
+        <li id="tab-keihin-tohoku" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            	JR京浜東北線
+    			<span class="caret"></span>
+    		</a>
+            <ul class="dropdown-menu">
+                <li class="selectable-tab" data-table-type='keihin-tohoku-north'><a href="#">北行き</a></li>
+                <li class="selectable-tab" data-table-type='keihin-tohoku-south'><a href="#">南行き</a></li>
+            </ul>
+        </li>
+        <li id="tab-yamanote" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            	JR山手線
+    			<span class="caret"></span>
+    		</a>
+            <ul class="dropdown-menu">
+                <li class="selectable-tab" data-table-type='yamanote-uchi'><a href="#">内回り</a></li>
+                <li class="selectable-tab" data-table-type='yamanote-soto'><a href="#">外回り</a></li>
+            </ul>
+        </li>
+    </ul>
+    <article id="shuttle-bus">
+        <article class="time-table tamachi">
+            <h2>田町駅</h2>
+            <div id="tamachi-arrive-soon" class="arrival-info">
+            </div>
+            <aside>
+                <table id="from-tamachi">
+                </table>
+            </aside>
+        </article>
+        <article class="time-table azaju">
+            <h2>麻布十番ビル</h2>
+            <div id="azaju-arrive-soon" class="arrival-info">
+            </div>
+            <aside>
+                <table id="from-azaju">
+                </table>
+            </aside>
+        </article>
+    </article>
+    <article id="train-diamond-keihin-tohoku-north" class="hidden train-diamond">
+        <h2 id="line">京浜東北線　北向き</h2>
+        <div id="train-arrive-soon" class="arrival-info">
+        </div>
+        <aside>
+            <table id="train">
+            </table>
+        </aside>
+    </article>
+    <article id="train-diamond-keihin-tohoku-south" class="hidden train-diamond">
+        <h2 id="line">京浜東北線　南向き</h2>
+        <div id="train-arrive-soon" class="arrival-info">
+        </div>
+        <aside>
+            <table id="train">
+            </table>
+        </aside>
+    </article>
+    <article id="train-diamond-yamanote-uchi" class="hidden train-diamond">
+        <h2 id="line">山手線　内回り</h2>
+        <div id="train-arrive-soon" class="arrival-info">
+        </div>
+        <aside>
+            <table id="train">
+            </table>
+        </aside>
+    </article>
+    <article id="train-diamond-yamanote-soto" class="hidden train-diamond">
+        <h2 id="line">山手線　外回り</h2>
+        <div id="train-arrive-soon" class="arrival-info">
+        </div>
+        <aside>
+            <table id="train">
+            </table>
+        </aside>
+    </article>
+</body>
+
+</html>
