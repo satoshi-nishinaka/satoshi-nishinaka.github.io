@@ -200,7 +200,7 @@
             list.minutes.forEach(function(minute) {
                 // console.log(minute);
                 var targetId = "from-" + destinationId + "-" + zeroSuppress(hour) + zeroSuppress(minute.minute);
-                html += '<div id="' + targetId + '" class="visible-xs-inline-block align-text-bottom center-block">';
+                html += '<div id="' + targetId + '" class="visible-xs-inline-block align-text-bottom center-block departure-time">';
                 if (minute.destination !== '無印' || minute.train !== '無印') {
                     html += '<div>';
                     if (minute.destination !== '無印') {
@@ -349,7 +349,7 @@
             margin: 0;
         }
 
-        #shuttle-bus .now {
+        #shuttle-bus .now, .train-diamond .now {
             -webkit-animation-name: pulse;
             /* 実行する名前 */
             -webkit-animation-duration: 0.5s;
