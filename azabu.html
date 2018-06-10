@@ -198,7 +198,7 @@
             if (60 < remainMinutes) {
                 $("#" + place + '-arrive-soon').html('<div class="alert alert-warning">始発までお待ち下さい</div>');
             } else {
-                console.log(targetId);
+                // console.log(targetId);
                 if (remainMinutes == 0) {
                     $("#" + place + '-arrive-soon').html('<div class="alert alert-success">到着時刻です</div>');
                     $("#" + targetId).addClass('now');
@@ -375,7 +375,7 @@
         }
 
         body > ul > li > a,
-        body > ul > li.dropdown.open > ul > li >a {
+        body > ul > li.dropdown.open > ul > li > a {
             font-size: 12px;
         }
 
