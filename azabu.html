@@ -26,13 +26,15 @@
         "十": "東十条",
         "上": "上野",
     };
+
     var zeroSuppress = function(value) {
         value = parseInt(value);
         if (0 <= value && value < 10) {
             return '0' + value;
         }
         return value;
-    }
+    };
+
     var showCurrentTime = function() {
         var nowTime = new Date(); //  現在日時を得る
         var nowHour = nowTime.getHours(); // 時を抜き出す
@@ -44,12 +46,7 @@
             arrivalCheckTime = setInterval(function() {
                 $(".departure-time").removeClass('now');
                 $(".departure-time").removeClass('soon');
-                showArriveSoon('tamachi');
-                showArriveSoon('azaju');
-                showTrainArriveSoon('train-diamond-keihin-tohoku-south');
-                showTrainArriveSoon('train-diamond-keihin-tohoku-north');
-                showTrainArriveSoon('train-diamond-yamanote-uchi');
-                showTrainArriveSoon('train-diamond-yamanote-soto');
+                showArriveSoon();
             }, 10000);
         }
     };
@@ -103,7 +100,7 @@
         $("#" + destinationId + " table").html(html);
     };
 
-    var showArriveSoon = function(place) {
+    var showBusArriveSoon = function(place) {
         switch (place) {
             case 'tamachi':
                 source = tamachi;
@@ -133,12 +130,11 @@
             if (60 < remainMinutes) {
                 $("#" + place + '-arrive-soon').html('<div class="alert alert-warning">始発までお待ち下さい</div>');
             } else {
+                var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
                 if (remainMinutes == 0) {
-                    var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
                     $("#" + place + '-arrive-soon').html('<div class="alert alert-success">到着時刻です</div>');
                     $("#" + targetId).addClass('now');
                 } else {
-                    var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
                     $("#" + place + '-arrive-soon').html('<div class="alert alert-info">' + previousTimeText + '<br />あと' + remainMinutes + '分</div>');
                     $("#" + targetId).addClass('soon');
                 }
@@ -169,6 +165,7 @@
         var currentTime = nowTime.getHours() * 60 + nowTime.getMinutes();
         var previousTimeText = null;
         var find = false;
+        var targetId = '';
         remainMinutes = 0;
         source.diamond.forEach(function(list) {
             var hour = parseInt(list.hour);
@@ -181,6 +178,7 @@
                 if (currentTime <= time) {
                     find = true;
                     previousTimeText = zeroSuppress(hour) + ":" + minute.minute;
+                    targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
                     if (minute.destination != '無印') {
                         previousTimeText += " " + destinations[minute.destination] + '止まり';
                     }
@@ -195,14 +193,11 @@
             if (60 < remainMinutes) {
                 $("#" + place + '-arrive-soon').html('<div class="alert alert-warning">始発までお待ち下さい</div>');
             } else {
+                console.log(targetId);
                 if (remainMinutes == 0) {
-                    var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
-                    // console.log(targetId);
                     $("#" + place + '-arrive-soon').html('<div class="alert alert-success">到着時刻です</div>');
                     $("#" + targetId).addClass('now');
                 } else {
-                    var targetId = 'from-' + place + '-' + previousTimeText.replace(':', '');
-                    // console.log(targetId);
                     $("#" + place + '-arrive-soon').html('<div class="alert alert-info">' + previousTimeText + '<br />あと' + remainMinutes + '分</div>');
                     $("#" + targetId).addClass('soon');
                 }
@@ -210,6 +205,15 @@
         } else {
             $("#" + place + '-arrive-soon').html('<div class="alert alert-warning">本日は終了しています</div>');
         }
+    };
+
+    var showArriveSoon = function() {
+        showBusArriveSoon('tamachi');
+        showBusArriveSoon('azaju');
+        showTrainArriveSoon('train-diamond-keihin-tohoku-south');
+        showTrainArriveSoon('train-diamond-keihin-tohoku-north');
+        showTrainArriveSoon('train-diamond-yamanote-uchi');
+        showTrainArriveSoon('train-diamond-yamanote-soto');
     };
 
     $(document).ready(function() {
@@ -220,12 +224,7 @@
         renderingTrainDepartureTimes('train-diamond-keihin-tohoku-south', keihinTohokuSouth);
         renderingTrainDepartureTimes('train-diamond-yamanote-uchi', yamanoteUchi);
         renderingTrainDepartureTimes('train-diamond-yamanote-soto', yamanoteSoto);
-        showArriveSoon('tamachi');
-        showArriveSoon('azaju');
-        showTrainArriveSoon('train-diamond-keihin-tohoku-south');
-        showTrainArriveSoon('train-diamond-keihin-tohoku-north');
-        showTrainArriveSoon('train-diamond-yamanote-uchi');
-        showTrainArriveSoon('train-diamond-yamanote-soto');
+        showArriveSoon();
         var timer = setInterval(function() {
             showCurrentTime();
         }, 1000);
