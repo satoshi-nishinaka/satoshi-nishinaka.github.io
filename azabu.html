@@ -10,7 +10,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/time-table.js"></script>
     <script type="text/javascript">
-
     var arrivalCheckTime = null;
     var destinations = {
         "大": "大崎",
@@ -158,6 +157,12 @@
             case 'train-diamond-yamanote-soto':
                 source = yamanoteSoto;
                 break;
+            case 'train-diamond-keihin-tohoku-kamata-north':
+                source = keihinTohokuFromKamataNorth;
+                break;
+            case 'train-diamond-keihin-tohoku-kamata-south':
+                source = keihinTohokuFromKamataSouth;
+                break;
             default:
                 return;
         }
@@ -214,6 +219,15 @@
         showTrainArriveSoon('train-diamond-keihin-tohoku-north');
         showTrainArriveSoon('train-diamond-yamanote-uchi');
         showTrainArriveSoon('train-diamond-yamanote-soto');
+        showTrainArriveSoon('train-diamond-keihin-tohoku-kamata-south');
+        showTrainArriveSoon('train-diamond-keihin-tohoku-kamata-north');
+    };
+
+    var switchTab = function(activeTab, activeTimeTable) {
+        $('#shuttle-bus').addClass('hidden');
+        $('.train-diamond').addClass('hidden');
+        $("#" + activeTimeTable).removeClass('hidden');
+        $('#' + activeTab).addClass('active');
     };
 
     $(document).ready(function() {
@@ -224,6 +238,8 @@
         renderingTrainDepartureTimes('train-diamond-keihin-tohoku-south', keihinTohokuSouth);
         renderingTrainDepartureTimes('train-diamond-yamanote-uchi', yamanoteUchi);
         renderingTrainDepartureTimes('train-diamond-yamanote-soto', yamanoteSoto);
+        renderingTrainDepartureTimes('train-diamond-keihin-tohoku-kamata-south', keihinTohokuFromKamataSouth);
+        renderingTrainDepartureTimes('train-diamond-keihin-tohoku-kamata-north', keihinTohokuFromKamataNorth);
         showArriveSoon();
         var timer = setInterval(function() {
             showCurrentTime();
@@ -237,46 +253,40 @@
             var activeTab = '';
             switch (selectTab) {
                 case "shuttle-bus":
-                    activeTab = 'tab-shuttle-bus';
-                    $('.train-diamond').addClass('hidden');
-                    $('#shuttle-bus').removeClass('hidden');
+                    switchTab('tab-shuttle-bus', 'shuttle-bus');
                     break;
                 case "keihin-tohoku-north":
-                    activeTab = 'tab-keihin-tohoku';
-                    $('#shuttle-bus').addClass('hidden');
-                    $('.train-diamond').addClass('hidden');
-                    $("#train-diamond-keihin-tohoku-north").removeClass('hidden');
+                    switchTab('tab-keihin-tohoku', 'train-diamond-keihin-tohoku-north');
                     break;
                 case "keihin-tohoku-south":
-                    activeTab = 'tab-keihin-tohoku';
-                    $('#shuttle-bus').addClass('hidden');
-                    $('.train-diamond').addClass('hidden');
-                    $("#train-diamond-keihin-tohoku-south").removeClass('hidden');
+                    switchTab('tab-keihin-tohoku', 'train-diamond-keihin-tohoku-south');
                     break;
                 case "yamanote-uchi":
-                    activeTab = 'tab-yamanote';
-                    $('#shuttle-bus').addClass('hidden');
-                    $('.train-diamond').addClass('hidden');
-                    $("#train-diamond-yamanote-uchi").removeClass('hidden');
+                    switchTab('tab-yamanote', 'train-diamond-yamanote-uchi');
                     break;
                 case "yamanote-soto":
-                    activeTab = 'tab-yamanote';
-                    $('#shuttle-bus').addClass('hidden');
-                    $('.train-diamond').addClass('hidden');
-                    $("#train-diamond-yamanote-soto").removeClass('hidden');
+                    switchTab('tab-yamanote', 'train-diamond-yamanote-soto');
                     break;
+                case "keihin-tohoku-from-kamata-north":
+                    switchTab('tab-keihin-tohoku', 'train-diamond-keihin-tohoku-kamata-north');
+                    break;
+                case "keihin-tohoku-from-kamata-south":
+                    switchTab('tab-keihin-tohoku', 'train-diamond-keihin-tohoku-kamata-south');
+                    break;
+                default:
+                    console.log(selectTab);
+                    return;
             }
-            $('#' + activeTab).addClass('active');
         });
     });
-
     </script>
     <style type="text/css">
         body {
             margin: 0 4px;
-            10px;
         }
-
+        header {
+            margin: 8px 0;
+        }
         header h1 {
             text-align: center;
         }
@@ -342,7 +352,8 @@
             margin: 0;
         }
 
-        #shuttle-bus .now, .train-diamond .now {
+        #shuttle-bus .now,
+        .train-diamond .now {
             -webkit-animation-name: pulse;
             /* 実行する名前 */
             -webkit-animation-duration: 0.5s;
@@ -357,13 +368,14 @@
             /* 実行までの待ち時間 */
         }
 
-        #shuttle-bus .soon, .train-diamond .soon {
+        #shuttle-bus .soon,
+        .train-diamond .soon {
             background-color: #d9edf7;
             color: #31708f;
         }
 
         body > ul > li > a,
-        body > ul > li.dropdown.open > ul > li > a {
+        body > ul > li.dropdown.open > ul > li >a {
             font-size: 12px;
         }
 
@@ -393,8 +405,10 @@
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li class="selectable-tab" data-table-type='keihin-tohoku-north'><a href="#">北行き</a></li>
-                <li class="selectable-tab" data-table-type='keihin-tohoku-south'><a href="#">南行き</a></li>
+                <li class="selectable-tab" data-table-type='keihin-tohoku-north'><a href="#">田町発 北行き</a></li>
+                <li class="selectable-tab" data-table-type='keihin-tohoku-south'><a href="#">田町発 南行き</a></li>
+                <li class="selectable-tab" data-table-type='keihin-tohoku-from-kamata-north'><a href="#">蒲田発 北行き</a></li>
+                <li class="selectable-tab" data-table-type='keihin-tohoku-from-kamata-south'><a href="#">蒲田発 南行き</a></li>
             </ul>
         </li>
         <li id="tab-yamanote" class="dropdown">
@@ -464,6 +478,23 @@
             </table>
         </aside>
     </article>
+    <article id="train-diamond-keihin-tohoku-kamata-north" class="hidden train-diamond">
+        <h2 id="line" class="center-block">蒲田駅　京浜東北線・根岸線 品川・東京方面　(北行)</h2>
+        <div id="train-diamond-keihin-tohoku-kamata-north-arrive-soon" class="arrival-info center-block">
+        </div>
+        <aside>
+            <table id="train">
+            </table>
+        </aside>
+    </article>
+    <article id="train-diamond-keihin-tohoku-kamata-south"" class="hidden train-diamond">
+        <h2 id="line" class="center-block">蒲田駅　京浜東北線・根岸線 横浜・関内方面　(南行)</h2>
+        <div id="train-diamond-keihin-tohoku-kamata-south-arrive-soon" class="arrival-info center-block">
+        </div>
+        <aside>
+            <table id="train">
+            </table>
+        </aside>
+    </article>
 </body>
-
 </html>
