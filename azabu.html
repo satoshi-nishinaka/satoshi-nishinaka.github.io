@@ -50,7 +50,7 @@
         }
     };
 
-    var rendaringBusDepartureTimes = function(applyHtmlTagsId, timeTable) {
+    var renderingBusDepartureTimes = function(applyHtmlTagsId, timeTable) {
         var previousHour = null;
         var html = '';
         timeTable.forEach(function(item, index) {
@@ -200,10 +200,10 @@
             } else {
                 // console.log(targetId);
                 if (remainMinutes == 0) {
-                    $("#" + place + '-arrive-soon').html('<div class="alert alert-success">到着時刻です</div>');
+                    $("#" + place + '-arrive-soon').html('<div class="alert alert-success" data-target-id="' + targetId + '">到着時刻です</div>');
                     $("#" + targetId).addClass('now');
                 } else {
-                    $("#" + place + '-arrive-soon').html('<div class="alert alert-info">' + previousTimeText + '<br />あと' + remainMinutes + '分</div>');
+                    $("#" + place + '-arrive-soon').html('<div class="alert alert-info" data-target-id="' + targetId + '">' + previousTimeText + '<br />あと' + remainMinutes + '分</div>');
                     $("#" + targetId).addClass('soon');
                 }
             }
@@ -221,6 +221,19 @@
         showTrainArriveSoon('train-diamond-yamanote-soto');
         showTrainArriveSoon('train-diamond-keihin-tohoku-kamata-south');
         showTrainArriveSoon('train-diamond-keihin-tohoku-kamata-north');
+
+        // short-cut
+        $('.arrival-info div').click(function() {
+            var speed = 500;
+            var targetId = $(this).attr('data-target-id');
+            console.log(targetId);
+            if (targetId === undefined) return;
+            var target = $("#" + targetId);
+            var position = target.offset().top;
+            var paddingTop = $('body').css('padding-top').replace(/px/, '');
+            position = parseInt(position) - parseInt(paddingTop);
+            $("html, body").animate({scrollTop:position}, speed, "swing");
+        });
     };
 
     var switchTab = function(activeTab, activeTimeTable) {
@@ -232,8 +245,8 @@
 
     $(document).ready(function() {
         showCurrentTime();
-        rendaringBusDepartureTimes('from-tamachi', tamachi);
-        rendaringBusDepartureTimes('from-azaju', azaju);
+        renderingBusDepartureTimes('from-tamachi', tamachi);
+        renderingBusDepartureTimes('from-azaju', azaju);
         renderingTrainDepartureTimes('train-diamond-keihin-tohoku-north', keihinTohokuNorth);
         renderingTrainDepartureTimes('train-diamond-keihin-tohoku-south', keihinTohokuSouth);
         renderingTrainDepartureTimes('train-diamond-yamanote-uchi', yamanoteUchi);
